@@ -1,0 +1,8 @@
+numpy
+scipy
+trimesh==5.1.1
+rtree
+scikit-image==0.26.0
+streamlit==1.66.0
+shapely
+mapbox_earcut
