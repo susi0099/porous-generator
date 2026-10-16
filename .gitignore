@@ -221,3 +221,5 @@ __marimo__/
 outputs/
 .venv/
 test_cube.stl
+hello_check.py
+proto_check.py
