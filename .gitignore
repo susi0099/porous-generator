@@ -226,3 +226,7 @@ proto_check.py
 
 day1_check.py
 day1_broken.stl
+
+day2_check.py
+day2_cube30.stl
+day2_sphere40.stl
