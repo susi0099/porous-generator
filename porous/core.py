@@ -1,9 +1,12 @@
 """Core functions for the porous structure generator."""
+import json
+import time
 from pathlib import Path
 
 import numpy as np
 import trimesh
 from scipy import ndimage
+from skimage.measure import marching_cubes
 
 DEFAULT_CELL = 6.0        # gyroid period in mm
 DEFAULT_PITCH = 0.5       # voxel size in mm
@@ -72,3 +75,66 @@ def keep_largest(mat):
     sizes = np.bincount(labels.ravel())
     sizes[0] = 0
     return labels == sizes.argmax(), int(n - 1)
+
+
+def to_mesh(mat, vg):
+    """Turn the material voxels into a closed mesh (fix 2 and fix 3).
+    Pads with empty voxels so the surface is closed at the edges."""
+    verts, faces, _, _ = marching_cubes(np.pad(mat, 1).astype(np.uint8), level=0.5)
+    verts = trimesh.transform_points(verts - 1, vg.transform)
+    mesh = trimesh.Trimesh(verts, faces, process=True)
+    if mesh.volume < 0:
+        mesh.invert()
+    return mesh
+
+
+def make_porous(mesh, porosity=None, graded=None, cell=DEFAULT_CELL,
+                pitch=DEFAULT_PITCH, skin=0.0, tol=DEFAULT_TOL,
+                max_iter=DEFAULT_MAX_ITER, progress=None):
+    """Convert a closed mesh into a gyroid porous mesh (temporary version).
+    Uniform porosity only, no calibration yet (added on 10/22).
+    Returns (output mesh, info dict in the JSON format of chapter 3)."""
+    if porosity is None or graded is not None:
+        raise ValueError("Graded porosity is not supported yet.")
+    if skin > 0:
+        raise ValueError("Skin is not supported yet.")
+    report = progress or (lambda x: None)
+    start = time.perf_counter()
+
+    check_size(mesh, pitch)
+    report(0.05)
+    vg, solid = voxelize(mesh, pitch)
+    f = gyroid_field(vg, solid.shape, cell)
+    report(0.3)
+
+    t = float(np.quantile(f[solid], porosity / 100))   # fix 1
+    mat, removed = keep_largest(solid & (f > t))       # fix 5
+    report(0.5)
+    out = to_mesh(mat, vg)                             # fix 2 and 3
+    report(0.95)
+
+    info = {
+        "input": str(mesh.metadata.get("file_path") or mesh.metadata.get("file_name") or ""),
+        "mode": "uniform",
+        "target": float(porosity),
+        "graded": None,
+        "cell": cell, "pitch": pitch, "skin": skin,
+        "threshold": round(t, 4),
+        "iterations": 1,
+        "voxel_porosity": round(float((1 - mat.sum() / solid.sum()) * 100), 2),
+        "mesh_porosity": round(float((1 - out.volume / mesh.volume) * 100), 2),
+        "watertight": bool(out.is_watertight),
+        "islands_removed": removed,
+        "faces": int(len(out.faces)),
+        "seconds": round(time.perf_counter() - start, 2),
+    }
+    report(1.0)
+    return out, info
+
+
+def export(mesh, info, path) -> None:
+    """Save a binary STL and a JSON file with the same name."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    mesh.export(path, file_type="stl")  # binary STL
+    path.with_suffix(".json").write_text(json.dumps(info, indent=2), encoding="utf-8")
