@@ -1,0 +1,7 @@
+model,source_url,author,license,notes
+cube30,,generated with trimesh,own work,
+cylinder30,,generated with trimesh,own work,
+sphere40,,generated with trimesh,own work,
+pyramid40,,generated with trimesh,own work,
+broken_cube,,generated with trimesh,own work,
+sample,https://www.printables.com/model/ここに本当のURL,Braden Wingfield,CC BY 4.0,scaled to 40 mm long side
