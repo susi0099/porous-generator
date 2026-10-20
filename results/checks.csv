@@ -1,0 +1,5 @@
+date,model,mode,target,cell,pitch,watertight,mesh_porosity,error,band_max_error,parts,bbox_diff_mm,faces,file_mb,seconds,pass
+2026-10-20,cube30,uniform,50.0,6.0,0.5,True,47.7,-2.3,,1,0.25,192296,9.6,0.63,True
+2026-10-20,cube30,uniform,20.0,6.0,0.5,True,15.8,-4.2,,1,0.25,187652,9.4,1.33,False
+2026-10-20,sphere40,uniform,50.0,6.0,0.5,True,47.7,-2.3,,1,0.25,241450,12.1,1.3,True
+2026-10-20,sample,uniform,20.0,6.0,0.5,False,,,,,0.27,82884,4.1,0.75,False
