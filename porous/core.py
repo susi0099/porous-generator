@@ -8,6 +8,8 @@ import trimesh
 from scipy import ndimage
 from skimage.measure import marching_cubes
 
+from .calibrate import calibrate, load_table, threshold_from_table
+
 DEFAULT_CELL = 6.0        # gyroid period in mm
 DEFAULT_PITCH = 0.5       # voxel size in mm
 DEFAULT_TOL = 1.0         # allowed porosity error in points
@@ -16,7 +18,7 @@ MAX_VOXELS = 50_000_000   # memory limit for the voxel grid
 MIN_POROSITY = 5.0        # lowest porosity the user can request (%)
 MAX_POROSITY = 85.0       # highest porosity the user can request (%)
 AXES = {"X": 0, "Y": 1, "Z": 2}
-QS = np.linspace(0.01, 0.99, 99)  # porosity steps for the graded lookup table
+GYROID_PHASE = (0.137, 0.291, 0.419)  # pattern shift in cells, breaks ties (see gyroid_field)
 MC_LEVEL = 0.45          # surface level for marching cubes (not 0.5, see to_mesh)
 
 
@@ -58,9 +60,12 @@ def axis_coords(vg, shape):
 
 def gyroid_field(vg, shape, cell):
     """Gyroid value f at every voxel center (float32).
-    Computed per axis and broadcast, so no huge point list is made."""
+    Computed per axis and broadcast, so no huge point list is made.
+    The pattern is shifted by GYROID_PHASE so that voxel centers do not sit on
+    its symmetry points; otherwise f has only a few values and porosity jumps."""
     k = np.float32(2 * np.pi / cell)
-    x, y, z = [c * k for c in axis_coords(vg, shape)]
+    x, y, z = [(c + np.float32(ph * cell)) * k
+               for c, ph in zip(axis_coords(vg, shape), GYROID_PHASE)]
     sx, cx = np.sin(x)[:, None, None], np.cos(x)[:, None, None]
     sy, cy = np.sin(y)[None, :, None], np.cos(y)[None, :, None]
     sz, cz = np.sin(z)[None, None, :], np.cos(z)[None, None, :]
@@ -94,43 +99,59 @@ def to_mesh(mat, vg):
 def make_porous(mesh, porosity=None, graded=None, cell=DEFAULT_CELL,
                 pitch=DEFAULT_PITCH, skin=0.0, tol=DEFAULT_TOL,
                 max_iter=DEFAULT_MAX_ITER, progress=None):
-    """Convert a closed mesh into a gyroid porous mesh (temporary version).
-    Uniform porosity only, no calibration yet (added on 10/22).
+    """Convert a closed mesh into a gyroid porous mesh (uniform porosity).
+    Graded porosity and skin are added later (10/26-10/30).
     Returns (output mesh, info dict in the JSON format of chapter 3)."""
-    if porosity is None or graded is not None:
+    if graded is not None or porosity is None:
         raise ValueError("Graded porosity is not supported yet.")
     if skin > 0:
         raise ValueError("Skin is not supported yet.")
     report = progress or (lambda x: None)
     start = time.perf_counter()
+    table = load_table()
 
+    # Steps 2-4: done once, outside the calibration loop
     check_size(mesh, pitch)
     report(0.05)
     vg, solid = voxelize(mesh, pitch)
     f = gyroid_field(vg, solid.shape, cell)
-    report(0.3)
+    report(0.2)
 
-    t = float(np.quantile(f[solid], porosity / 100))   # fix 1
-    mat, removed = keep_largest(solid & (f > t))       # fix 5
-    report(0.5)
-    out = to_mesh(mat, vg)                             # fix 2 and 3
-    report(0.95)
+    target = float(porosity)
+    t_first = float(threshold_from_table(target, table))
+    calls = {"n": 0}
 
+    def build(request):
+        """Steps 5-8 for one porosity request: table -> t -> mesh."""
+        t = float(threshold_from_table(request, table))   # fix 1
+        mat, removed = keep_largest(solid & (f > t))       # fix 5
+        out = to_mesh(mat, vg)                             # fix 2 and 3
+        calls["n"] += 1
+        report(min(0.2 + 0.1 * calls["n"], 0.95))
+        voxel_p = (1 - mat.sum() / solid.sum()) * 100
+        return out, {"threshold": t, "voxel_porosity": voxel_p, "islands_removed": removed}
+
+    best = calibrate(build, target, mesh.volume, tol, max_iter)   # fix 4
+    out, extra = best["mesh"], best["extra"]
     info = {
         "input": str(mesh.metadata.get("file_path") or mesh.metadata.get("file_name") or ""),
         "mode": "uniform",
-        "target": float(porosity),
+        "target": target,
         "graded": None,
         "cell": cell, "pitch": pitch, "skin": skin,
-        "threshold": round(t, 4),
-        "iterations": 1,
-        "voxel_porosity": round(float((1 - mat.sum() / solid.sum()) * 100), 2),
-        "mesh_porosity": round(float((1 - out.volume / mesh.volume) * 100), 2),
+        "threshold_initial": round(t_first, 4),
+        "threshold": round(extra["threshold"], 4),
+        "iterations": best["iterations"],
+        "voxel_porosity": round(float(extra["voxel_porosity"]), 2),
+        "mesh_porosity": round(float(best["measured"]), 2),
+        "band_max_error": None,
         "watertight": bool(out.is_watertight),
-        "islands_removed": removed,
+        "islands_removed": extra["islands_removed"],
         "faces": int(len(out.faces)),
         "seconds": round(time.perf_counter() - start, 2),
     }
+    if best["reached_limit"]:
+        info["reached_limit"] = True
     report(1.0)
     return out, info
 
