@@ -17,6 +17,7 @@ MIN_POROSITY = 5.0        # lowest porosity the user can request (%)
 MAX_POROSITY = 85.0       # highest porosity the user can request (%)
 AXES = {"X": 0, "Y": 1, "Z": 2}
 QS = np.linspace(0.01, 0.99, 99)  # porosity steps for the graded lookup table
+MC_LEVEL = 0.45          # surface level for marching cubes (not 0.5, see to_mesh)
 
 
 def load_mesh(path) -> trimesh.Trimesh:
@@ -79,8 +80,10 @@ def keep_largest(mat):
 
 def to_mesh(mat, vg):
     """Turn the material voxels into a closed mesh (fix 2 and fix 3).
-    Pads with empty voxels so the surface is closed at the edges."""
-    verts, faces, _, _ = marching_cubes(np.pad(mat, 1).astype(np.uint8), level=0.5)
+    Pads with empty voxels so the surface is closed at the edges.
+    Level 0.5 is an exact tie for 0/1 voxels, which can make edges shared
+    by 3 or more faces (not watertight), so MC_LEVEL is used instead."""
+    verts, faces, _, _ = marching_cubes(np.pad(mat, 1).astype(np.uint8), level=MC_LEVEL)
     verts = trimesh.transform_points(verts - 1, vg.transform)
     mesh = trimesh.Trimesh(verts, faces, process=True)
     if mesh.volume < 0:
