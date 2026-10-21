@@ -24,8 +24,9 @@ CHECKS_CSV = ROOT / "results" / "checks.csv"
 MAX_ERROR = 3.0          # points, overall porosity
 MAX_BAND_ERROR = 5.0     # points, each band in graded mode
 MAX_BBOX_DIFF_MM = 1.0
+MAX_BBOX_DIFF_SKIN_MM = 0.5   # skin-effect tests (spec ch.4, task 3)
+BBOX_JUDGED_MODELS = {"cube30", "sphere40", "cylinder30"}  # bbox is judged for these, uniform only
 N_BANDS = 5
-N_SLICES_FOR_TARGET = 20  # thin slices used to find the volume-weighted graded target
 
 COLUMNS = ["date", "model", "mode", "target", "cell", "pitch", "watertight", "mesh_porosity",
            "error", "band_max_error", "parts", "bbox_diff_mm", "faces", "file_mb", "seconds", "pass"]
@@ -66,19 +67,14 @@ def cut_band(mesh: trimesh.Trimesh, axis: int, lo: float, hi: float) -> trimesh.
 def graded_overall_target(original, axis_name, p_min, p_max) -> float:
     """Volume-weighted average of p(c) over the original model.
 
+    p(c) is linear, so its volume-weighted average equals p at the centre of mass.
     For a cube or cylinder this equals (p_min + p_max) / 2. For a pyramid most of the volume is
     near the base, so the true overall target is lower than the simple average.
     """
     axis = AXES[axis_name]
     c_min, c_max = original.bounds[0, axis], original.bounds[1, axis]
-    edges = np.linspace(c_min, c_max, N_SLICES_FOR_TARGET + 1)
-    total = weighted = 0.0
-    for lo, hi in zip(edges[:-1], edges[1:]):
-        v = cut_band(original, axis, lo, hi).volume
-        centre = (lo + hi) / 2
-        weighted += v * (p_min + (p_max - p_min) * (centre - c_min) / (c_max - c_min))
-        total += v
-    return weighted / total
+    c_mass = original.center_mass[axis]
+    return p_min + (p_max - p_min) * (c_mass - c_min) / (c_max - c_min)
 
 
 def band_errors(original, output, axis_name, p_min, p_max) -> list[dict]:
@@ -149,7 +145,16 @@ def check(original_path, output_path, porosity_target=None, graded=None, csv_pat
     reasons = []
     if abs(error) > MAX_ERROR:
         reasons.append(f"error {error:+.1f}")
-    if bbox_diff > MAX_BBOX_DIFF_MM:
+    # Outer shape (spec ch.4, task 2): thin tips can break off at high porosity, so the bbox is
+    # judged only for simple shapes in uniform mode, and with a tighter limit when a skin is used.
+    model = original_path.stem
+    if skin > 0:
+        bbox_limit = MAX_BBOX_DIFF_SKIN_MM
+    elif not graded and model in BBOX_JUDGED_MODELS:
+        bbox_limit = MAX_BBOX_DIFF_MM
+    else:
+        bbox_limit = None  # recorded only
+    if bbox_limit is not None and bbox_diff > bbox_limit:
         reasons.append(f"bbox diff {bbox_diff:.2f} mm")
     if skin == 0 and parts != 1:  # with a skin the inner void is also counted, so skip this check
         reasons.append(f"{parts} parts")
@@ -172,7 +177,8 @@ def check(original_path, output_path, porosity_target=None, graded=None, csv_pat
         print(f"  watertight   {output.is_watertight}")
         print(f"  porosity     {measured:.1f}% (target {target:.1f}%, error {error:+.1f})")
         print(f"  parts        {parts}" + ("  (not judged: skin > 0)" if skin else ""))
-        print(f"  bbox diff    {bbox_diff:.2f} mm")
+        limit_note = "  (recorded only)" if bbox_limit is None else f"  (limit {bbox_limit} mm)"
+        print(f"  bbox diff    {bbox_diff:.2f} mm" + limit_note)
         for b in bands:
             print(f"  band {b['from']:7.2f} to {b['to']:7.2f}: {b['measured']:5.1f}% "
                   f"(target {b['target']:.1f}, error {b['error']:+.1f})")
