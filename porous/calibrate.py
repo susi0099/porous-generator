@@ -78,6 +78,24 @@ def calibrate(build, target, original_volume, tol, max_iter):
     best["reached_limit"] = True
     return best
 
+def calibrate_bands(build, measure, band_targets, tol, max_iter):
+    """Graded: correct each band until every band error is within tol.
+    build(corrections) returns (mesh, extra); measure(mesh) returns band porosities."""
+    corrections = np.zeros(len(band_targets))
+    best = None
+    for i in range(1, max_iter + 1):
+        mesh, extra = build(corrections)
+        errors = measure(mesh) - band_targets
+        worst = float(np.abs(errors).max())
+        if best is None or worst < best["band_max_error"]:
+            best = {"mesh": mesh, "extra": extra, "band_max_error": worst}
+        best["iterations"] = i
+        if worst <= tol:
+            best["reached_limit"] = False
+            return best
+        corrections = corrections - errors
+    best["reached_limit"] = True
+    return best
 
 def main(argv=None):
     """python -m porous.calibrate --build : make calibration.csv."""
