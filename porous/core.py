@@ -115,12 +115,12 @@ def make_porous(mesh, porosity=None, graded=None, cell=DEFAULT_CELL,
                 max_iter=DEFAULT_MAX_ITER, progress=None):
     """Convert a closed mesh into a gyroid porous mesh.
     Give porosity (%) or graded ({"axis": "Z", "p_min": 20, "p_max": 80}).
-    Skin is added later (10/30).
+        skin (mm) keeps a solid outer layer of that thickness.
     Returns (output mesh, info dict in the JSON format of chapter 3)."""
     if (porosity is None) == (graded is None):
         raise ValueError("Give either porosity or graded, not both.")
-    if skin > 0:
-        raise ValueError("Skin is not supported yet.")
+    if skin < 0:
+        raise ValueError("Skin must be 0 or more.")
     report = progress or (lambda x: None)
     start = time.perf_counter()
     table = load_table()
@@ -130,13 +130,23 @@ def make_porous(mesh, porosity=None, graded=None, cell=DEFAULT_CELL,
     report(0.05)
     vg, solid = voxelize(mesh, pitch)
     f = gyroid_field(vg, solid.shape, cell)
+
+    # Skin (work 4): voxels within `skin` mm of the surface are always material
+    shell = None
+    if skin > 0:
+        # Pad with empty voxels so the array edge counts as outside
+        dist = ndimage.distance_transform_edt(np.pad(solid, 1), sampling=pitch)
+        shell = solid & (dist[1:-1, 1:-1, 1:-1] <= skin)
     report(0.2)
 
     calls = {"n": 0}
 
     def finish(t):
         """Steps 5-8 for a threshold t (number or array that broadcasts)."""
-        mat, removed = keep_largest(solid & (f > t))       # fix 1 and 5
+        mat = solid & (f > t)
+        if shell is not None:
+            mat |= shell                                   # add the skin before calibration
+        mat, removed = keep_largest(mat)                   # fix 5
         out = to_mesh(mat, vg)                             # fix 2 and 3
         calls["n"] += 1
         report(min(0.2 + 0.1 * calls["n"], 0.95))
