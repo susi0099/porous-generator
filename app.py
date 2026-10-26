@@ -111,7 +111,7 @@ else:
     p_min = g2.slider(f"Porosity at min {axis} (%)", POROSITY_MIN, POROSITY_MAX, 20)
     p_max = g3.slider(f"Porosity at max {axis} (%)", POROSITY_MIN, POROSITY_MAX, 80)
     graded = {"axis": axis, "p_min": float(p_min), "p_max": float(p_max)}
-    target = (p_min + p_max) / 2
+    target = None  # the engine returns the volume-weighted target in info["target"]
 
 # 3. Advanced settings
 with st.expander("3. Advanced settings"):
@@ -143,14 +143,23 @@ if st.button("4. Generate", type="primary", disabled=mesh is None):
 res = st.session_state.get("result")
 if res and mesh is not None:
     info = res["info"]
+    # Graded: compare with the engine's volume-weighted target, not the simple average.
+    target = info.get("target")
+    if target is None:
+        target = res["target"]
     st.subheader("5. Result")
     r1, r2, r3, r4, r5 = st.columns(5)
-    r1.metric("Measured porosity", f"{info['mesh_porosity']:.1f}%")
-    r2.metric("Error", f"{info['mesh_porosity'] - res['target']:+.1f} pt")
+    r1.metric("Measured porosity", f"{info['mesh_porosity']:.1f}%",
+              help=f"Target {target:.1f}%" if target is not None else None)
+    r2.metric("Error", f"{info['mesh_porosity'] - target:+.1f} pt" if target is not None else "-")
     r3.metric("Watertight", "Yes" if info["watertight"] else "No")
     r4.metric("Triangles", f"{info['faces']:,}")
     r5.metric("Time", f"{info['seconds']:.1f} s")
+    if info.get("band_max_error") is not None:
+        st.caption(f"Graded: target {target:.1f}% (volume-weighted average). "
+                   f"Largest error in the 5 bands: {info['band_max_error']:.1f} pt.")
     if info.get("reached_limit"):
-        st.warning("The target could not be reached exactly. The closest result is shown.")
+        st.warning("The target could not be reached exactly. The closest result is shown. "
+                   "Try a thinner skin or a lower porosity.")
     st.download_button("6. Download STL", data=res["stl"], file_name=res["name"], mime="model/stl")
     st.info("Check the STL in PrusaSlicer before printing. High porosity makes thin walls.")

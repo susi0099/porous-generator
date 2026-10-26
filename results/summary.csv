@@ -1,31 +1,39 @@
 test,model,setting,engine_ok,watertight,mesh_porosity,error,band_max_error,parts,bbox_diff_mm,faces,file_mb,seconds,pass,reasons,message
-uniform,cube30,20%,TRUE,TRUE,20.9,0.9,,1,0.27,197500,9.9,1.38,TRUE,,target 20.0 / measured 20.9 / error +0.9 / iterations 2 / 1.4 s -> C:\work\porous-generator\outputs\cube30_p20.stl
-uniform,cube30,35%,TRUE,TRUE,35.8,0.8,,1,0.27,207000,10.4,1.01,TRUE,,target 35.0 / measured 35.8 / error +0.8 / iterations 2 / 1.0 s -> C:\work\porous-generator\outputs\cube30_p35.stl
-uniform,cube30,50%,TRUE,TRUE,49.1,-0.9,,1,0.27,205280,10.3,1.21,TRUE,,target 50.0 / measured 49.1 / error -0.9 / iterations 3 / 1.2 s -> C:\work\porous-generator\outputs\cube30_p50.stl
-uniform,cube30,65%,TRUE,TRUE,65.1,0.1,,1,0.27,184720,9.2,0.9,TRUE,,target 65.0 / measured 65.1 / error +0.1 / iterations 2 / 0.9 s -> C:\work\porous-generator\outputs\cube30_p65.stl
-uniform,cube30,80%,TRUE,TRUE,79.2,-0.8,,1,0.27,156760,7.8,0.58,TRUE,,target 80.0 / measured 79.2 / error -0.8 / iterations 1 / 0.6 s -> C:\work\porous-generator\outputs\cube30_p80.stl
-uniform,cylinder30,20%,TRUE,TRUE,20.1,0.1,,1,0.27,161440,8.1,2.15,TRUE,,target 20.0 / measured 20.1 / error +0.1 / iterations 3 / 2.1 s -> C:\work\porous-generator\outputs\cylinder30_p20.stl
-uniform,cylinder30,35%,TRUE,TRUE,36,1,,1,0.27,166296,8.3,2.1,TRUE,,target 35.0 / measured 36.0 / error +1.0 / iterations 2 / 2.1 s -> C:\work\porous-generator\outputs\cylinder30_p35.stl
-uniform,cylinder30,50%,TRUE,TRUE,49.3,-0.7,,1,0.27,165236,8.3,2.32,TRUE,,target 50.0 / measured 49.3 / error -0.7 / iterations 3 / 2.3 s -> C:\work\porous-generator\outputs\cylinder30_p50.stl
-uniform,cylinder30,65%,TRUE,TRUE,65.2,0.2,,1,0.27,147720,7.4,1.92,TRUE,,target 65.0 / measured 65.2 / error +0.2 / iterations 2 / 1.9 s -> C:\work\porous-generator\outputs\cylinder30_p65.stl
-uniform,cylinder30,80%,TRUE,TRUE,79,-1,,1,0.27,125276,6.3,1.66,TRUE,,target 80.0 / measured 79.0 / error -1.0 / iterations 1 / 1.7 s -> C:\work\porous-generator\outputs\cylinder30_p80.stl
-uniform,sphere40,20%,TRUE,TRUE,21,1,,1,0.28,249400,12.5,0.98,TRUE,,target 20.0 / measured 21.0 / error +1.0 / iterations 2 / 1.0 s -> C:\work\porous-generator\outputs\sphere40_p20.stl
-uniform,sphere40,35%,TRUE,TRUE,35.7,0.7,,1,0.28,259560,13,1.03,TRUE,,target 35.0 / measured 35.7 / error +0.7 / iterations 2 / 1.0 s -> C:\work\porous-generator\outputs\sphere40_p35.stl
-uniform,sphere40,50%,TRUE,TRUE,50.8,0.8,,1,0.28,254848,12.7,1.77,TRUE,,target 50.0 / measured 50.8 / error +0.8 / iterations 4 / 1.8 s -> C:\work\porous-generator\outputs\sphere40_p50.stl
-uniform,sphere40,65%,TRUE,TRUE,65.2,0.2,,1,0.28,231584,11.6,1,TRUE,,target 65.0 / measured 65.2 / error +0.2 / iterations 2 / 1.0 s -> C:\work\porous-generator\outputs\sphere40_p65.stl
-uniform,sphere40,80%,TRUE,TRUE,79.2,-0.8,,1,0.28,195280,9.8,0.56,TRUE,,target 80.0 / measured 79.2 / error -0.8 / iterations 1 / 0.6 s -> C:\work\porous-generator\outputs\sphere40_p80.stl
-uniform,pyramid40,20%,TRUE,TRUE,20.1,0.1,,1,0.28,137276,6.9,0.91,TRUE,,target 20.0 / measured 20.1 / error +0.1 / iterations 3 / 0.9 s -> C:\work\porous-generator\outputs\pyramid40_p20.stl
-uniform,pyramid40,35%,TRUE,TRUE,35.1,0.1,,1,0.28,135580,6.8,0.9,TRUE,,target 35.0 / measured 35.1 / error +0.1 / iterations 3 / 0.9 s -> C:\work\porous-generator\outputs\pyramid40_p35.stl
-uniform,pyramid40,50%,TRUE,TRUE,50.4,0.4,,1,0.28,131212,6.6,0.89,TRUE,,target 50.0 / measured 50.4 / error +0.4 / iterations 3 / 0.9 s -> C:\work\porous-generator\outputs\pyramid40_p50.stl
-uniform,pyramid40,65%,TRUE,TRUE,65.5,0.5,,1,0.74,116952,5.8,0.64,TRUE,,target 65.0 / measured 65.5 / error +0.5 / iterations 2 / 0.6 s -> C:\work\porous-generator\outputs\pyramid40_p65.stl
-uniform,pyramid40,80%,TRUE,TRUE,79.9,-0.1,,1,0.74,95308,4.8,0.66,TRUE,,target 80.0 / measured 79.9 / error -0.1 / iterations 2 / 0.7 s -> C:\work\porous-generator\outputs\pyramid40_p80.stl
-uniform,sample,20%,TRUE,TRUE,19.6,-0.4,,1,0.3,83764,4.2,0.68,TRUE,,target 20.0 / measured 19.6 / error -0.4 / iterations 3 / 0.7 s -> C:\work\porous-generator\outputs\sample_p20.stl
-uniform,sample,35%,TRUE,TRUE,35.6,0.6,,1,0.3,81976,4.1,0.57,TRUE,,target 35.0 / measured 35.6 / error +0.6 / iterations 2 / 0.6 s -> C:\work\porous-generator\outputs\sample_p35.stl
-uniform,sample,50%,TRUE,TRUE,50.2,0.2,,1,0.3,77768,3.9,0.67,TRUE,,target 50.0 / measured 50.1 / error +0.1 / iterations 3 / 0.7 s -> C:\work\porous-generator\outputs\sample_p50.stl
-uniform,sample,65%,TRUE,TRUE,65.9,0.9,,1,1.91,69104,3.5,0.53,TRUE,,target 65.0 / measured 65.9 / error +0.9 / iterations 2 / 0.5 s -> C:\work\porous-generator\outputs\sample_p65.stl
-uniform,sample,80%,TRUE,TRUE,80,0,,1,2.41,55724,2.8,0.5,TRUE,,target 80.0 / measured 80.0 / error -0.0 / iterations 2 / 0.5 s -> C:\work\porous-generator\outputs\sample_p80.stl
-graded,cube30,Z 20->80%,TRUE,TRUE,49.4,-0.6,0.3,1,0.27,192428,9.6,2.11,TRUE,,target 50.0 / measured 49.4 / error -0.6 / iterations 2 / 2.1 s -> C:\work\porous-generator\outputs\cube30_gZ_20_80.stl
-graded,cylinder30,Z 20->80%,TRUE,TRUE,49.4,-0.6,0.5,1,0.27,154880,7.7,2.67,TRUE,,target 50.0 / measured 49.4 / error -0.6 / iterations 2 / 2.7 s -> C:\work\porous-generator\outputs\cylinder30_gZ_20_80.stl
-graded,sphere40,Z 20->80%,TRUE,TRUE,50.3,0.3,0.5,1,0.28,244600,12.2,2.3,TRUE,,target 50.0 / measured 50.2 / error +0.2 / iterations 2 / 2.3 s -> C:\work\porous-generator\outputs\sphere40_gZ_20_80.stl
-graded,pyramid40,Z 20->80%,TRUE,TRUE,33.6,-1.4,0.2,1,1.23,135416,6.8,2.92,TRUE,,target 35.0 / measured 33.6 / error -1.4 / iterations 6 / 2.9 s -> C:\work\porous-generator\outputs\pyramid40_gZ_20_80.stl
-graded,sample,Z 20->80%,TRUE,TRUE,45.8,0,0.9,1,2.41,77812,3.9,1.3,TRUE,,target 45.8 / measured 45.8 / error -0.0 / iterations 3 / 1.3 s -> C:\work\porous-generator\outputs\sample_gZ_20_80.stl
+uniform,cube30,20%,True,True,20.9,0.9,,1,0.27,197500,9.9,3.26,True,,target 20.0 / measured 20.9 / error +0.9 / iterations 2 / 3.3 s -> C:\work\porous-generator\outputs\cube30_p20.stl
+uniform,cube30,35%,True,True,35.8,0.8,,1,0.27,207000,10.4,3.1,True,,target 35.0 / measured 35.8 / error +0.8 / iterations 2 / 3.1 s -> C:\work\porous-generator\outputs\cube30_p35.stl
+uniform,cube30,50%,True,True,49.1,-0.9,,1,0.27,205280,10.3,3.54,True,,target 50.0 / measured 49.1 / error -0.9 / iterations 3 / 3.5 s -> C:\work\porous-generator\outputs\cube30_p50.stl
+uniform,cube30,65%,True,True,65.1,0.1,,1,0.27,184720,9.2,3.25,True,,target 65.0 / measured 65.1 / error +0.1 / iterations 2 / 3.2 s -> C:\work\porous-generator\outputs\cube30_p65.stl
+uniform,cube30,80%,True,True,79.2,-0.8,,1,0.27,156760,7.8,1.96,True,,target 80.0 / measured 79.2 / error -0.8 / iterations 1 / 2.0 s -> C:\work\porous-generator\outputs\cube30_p80.stl
+uniform,cylinder30,20%,True,True,20.1,0.1,,1,0.27,161440,8.1,7.31,True,,target 20.0 / measured 20.1 / error +0.1 / iterations 3 / 7.3 s -> C:\work\porous-generator\outputs\cylinder30_p20.stl
+uniform,cylinder30,35%,True,True,36.0,1.0,,1,0.27,166296,8.3,6.74,True,,target 35.0 / measured 36.0 / error +1.0 / iterations 2 / 6.7 s -> C:\work\porous-generator\outputs\cylinder30_p35.stl
+uniform,cylinder30,50%,True,True,49.3,-0.7,,1,0.27,165236,8.3,7.48,True,,target 50.0 / measured 49.3 / error -0.7 / iterations 3 / 7.5 s -> C:\work\porous-generator\outputs\cylinder30_p50.stl
+uniform,cylinder30,65%,True,True,65.2,0.2,,1,0.27,147720,7.4,6.7,True,,target 65.0 / measured 65.2 / error +0.2 / iterations 2 / 6.7 s -> C:\work\porous-generator\outputs\cylinder30_p65.stl
+uniform,cylinder30,80%,True,True,79.0,-1.0,,1,0.27,125276,6.3,5.28,True,,target 80.0 / measured 79.0 / error -1.0 / iterations 1 / 5.3 s -> C:\work\porous-generator\outputs\cylinder30_p80.stl
+uniform,sphere40,20%,True,True,21.0,1.0,,1,0.28,249400,12.5,3.36,True,,target 20.0 / measured 21.0 / error +1.0 / iterations 2 / 3.4 s -> C:\work\porous-generator\outputs\sphere40_p20.stl
+uniform,sphere40,35%,True,True,35.7,0.7,,1,0.28,259560,13.0,3.55,True,,target 35.0 / measured 35.7 / error +0.7 / iterations 2 / 3.5 s -> C:\work\porous-generator\outputs\sphere40_p35.stl
+uniform,sphere40,50%,True,True,50.8,0.8,,1,0.28,254848,12.7,5.7,True,,target 50.0 / measured 50.8 / error +0.8 / iterations 4 / 5.7 s -> C:\work\porous-generator\outputs\sphere40_p50.stl
+uniform,sphere40,65%,True,True,65.2,0.2,,1,0.28,231584,11.6,2.56,True,,target 65.0 / measured 65.2 / error +0.2 / iterations 2 / 2.6 s -> C:\work\porous-generator\outputs\sphere40_p65.stl
+uniform,sphere40,80%,True,True,79.2,-0.8,,1,0.28,195280,9.8,0.81,True,,target 80.0 / measured 79.2 / error -0.8 / iterations 1 / 0.8 s -> C:\work\porous-generator\outputs\sphere40_p80.stl
+uniform,pyramid40,20%,True,True,20.1,0.1,,1,0.28,137276,6.9,3.08,True,,target 20.0 / measured 20.1 / error +0.1 / iterations 3 / 3.1 s -> C:\work\porous-generator\outputs\pyramid40_p20.stl
+uniform,pyramid40,35%,True,True,35.1,0.1,,1,0.28,135580,6.8,3.3,True,,target 35.0 / measured 35.1 / error +0.1 / iterations 3 / 3.3 s -> C:\work\porous-generator\outputs\pyramid40_p35.stl
+uniform,pyramid40,50%,True,True,50.4,0.4,,1,0.28,131212,6.6,3.14,True,,target 50.0 / measured 50.4 / error +0.4 / iterations 3 / 3.1 s -> C:\work\porous-generator\outputs\pyramid40_p50.stl
+uniform,pyramid40,65%,True,True,65.5,0.5,,1,0.74,116952,5.8,2.35,True,,target 65.0 / measured 65.5 / error +0.5 / iterations 2 / 2.4 s -> C:\work\porous-generator\outputs\pyramid40_p65.stl
+uniform,pyramid40,80%,True,True,79.9,-0.1,,1,0.74,95308,4.8,1.91,True,,target 80.0 / measured 79.9 / error -0.1 / iterations 2 / 1.9 s -> C:\work\porous-generator\outputs\pyramid40_p80.stl
+uniform,sample,20%,True,True,19.6,-0.4,,1,0.3,83764,4.2,2.45,True,,target 20.0 / measured 19.6 / error -0.4 / iterations 3 / 2.5 s -> C:\work\porous-generator\outputs\sample_p20.stl
+uniform,sample,35%,True,True,35.6,0.6,,1,0.3,81976,4.1,2.25,True,,target 35.0 / measured 35.6 / error +0.6 / iterations 2 / 2.2 s -> C:\work\porous-generator\outputs\sample_p35.stl
+uniform,sample,50%,True,True,50.2,0.2,,1,0.3,77768,3.9,2.55,True,,target 50.0 / measured 50.1 / error +0.1 / iterations 3 / 2.5 s -> C:\work\porous-generator\outputs\sample_p50.stl
+uniform,sample,65%,True,True,65.9,0.9,,1,1.91,69104,3.5,1.84,True,,target 65.0 / measured 65.9 / error +0.9 / iterations 2 / 1.8 s -> C:\work\porous-generator\outputs\sample_p65.stl
+uniform,sample,80%,True,True,80.0,-0.0,,1,2.41,55724,2.8,1.94,True,,target 80.0 / measured 80.0 / error -0.0 / iterations 2 / 1.9 s -> C:\work\porous-generator\outputs\sample_p80.stl
+graded,cube30,Z 20->80%,True,True,49.4,-0.6,0.3,1,0.27,192428,9.6,7.51,True,,target 50.0 / measured 49.4 / error -0.6 / iterations 2 / 7.5 s -> C:\work\porous-generator\outputs\cube30_gZ_20_80.stl
+graded,cylinder30,Z 20->80%,True,True,49.4,-0.6,0.5,1,0.27,154880,7.7,10.36,True,,target 50.0 / measured 49.4 / error -0.6 / iterations 2 / 10.4 s -> C:\work\porous-generator\outputs\cylinder30_gZ_20_80.stl
+graded,sphere40,Z 20->80%,True,True,50.3,0.3,0.5,1,0.28,244600,12.2,4.57,True,,target 50.0 / measured 50.2 / error +0.2 / iterations 2 / 4.6 s -> C:\work\porous-generator\outputs\sphere40_gZ_20_80.stl
+graded,pyramid40,Z 20->80%,True,True,33.6,-1.4,0.2,1,1.23,135416,6.8,4.21,True,,target 35.0 / measured 33.6 / error -1.4 / iterations 6 / 4.2 s -> C:\work\porous-generator\outputs\pyramid40_gZ_20_80.stl
+graded,sample,Z 20->80%,True,True,45.8,-0.0,0.9,1,2.41,77812,3.9,5.17,True,,target 45.8 / measured 45.8 / error -0.0 / iterations 3 / 5.2 s -> C:\work\porous-generator\outputs\sample_gZ_20_80.stl
+pitch,cube30,pitch 0.8,True,True,49.4,-0.6,,1,0.64,83404,4.2,1.32,True,,target 50.0 / measured 49.4 / error -0.6 / iterations 3 / 1.3 s -> C:\work\porous-generator\outputs\cube30_p50_pitch0.8.stl
+pitch,cube30,pitch 0.5,True,True,49.1,-0.9,,1,0.27,205280,10.3,4.16,True,,target 50.0 / measured 49.1 / error -0.9 / iterations 3 / 4.2 s -> C:\work\porous-generator\outputs\cube30_p50_pitch0.5.stl
+pitch,cube30,pitch 0.3,True,True,50.1,0.1,,1,0.17,553800,27.7,9.4,True,,target 50.0 / measured 50.1 / error +0.1 / iterations 2 / 9.4 s -> C:\work\porous-generator\outputs\cube30_p50_pitch0.3.stl
+cell,cube30,cell 4,True,True,50.8,0.8,,1,0.27,298280,14.9,3.65,True,,target 50.0 / measured 50.8 / error +0.8 / iterations 2 / 3.6 s -> C:\work\porous-generator\outputs\cube30_p50_cell4.stl
+cell,cube30,cell 6,True,True,49.1,-0.9,,1,0.27,205280,10.3,4.32,True,,target 50.0 / measured 49.1 / error -0.9 / iterations 3 / 4.3 s -> C:\work\porous-generator\outputs\cube30_p50_cell6.stl
+cell,cube30,cell 8,True,True,50.1,0.1,,1,0.27,158464,7.9,1.14,True,,target 50.0 / measured 50.1 / error +0.1 / iterations 2 / 1.1 s -> C:\work\porous-generator\outputs\cube30_p50_cell8.stl
+skin,pyramid40,65% skin 0.5,True,True,64.4,-0.6,,1,0.28,160260,8.0,2.92,True,,target 65.0 / measured 64.4 / error -0.6 / iterations 2 / 2.9 s -> C:\work\porous-generator\outputs\pyramid40_p65_skin0.5.stl
+skin,sample,65% skin 0.5,True,True,65.5,0.5,,6,0.3,103856,5.2,2.47,True,,target 65.0 / measured 65.5 / error +0.5 / iterations 2 / 2.5 s -> C:\work\porous-generator\outputs\sample_p65_skin0.5.stl
