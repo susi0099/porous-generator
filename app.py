@@ -76,8 +76,11 @@ def kv_table(rows, small=False) -> str:
 
 
 def signed(x: float, unit: str) -> str:
-    """Format a signed number with a real minus sign, e.g. −0.9 pt."""
-    return f"{x:+.1f} {unit}".replace("-", "−")
+    """Format a signed number with a real minus sign, e.g. −0.9 pt. A rounded zero shows as 0.0."""
+    v = round(x, 1) + 0.0  # + 0.0 turns -0.0 into 0.0
+    if v == 0:
+        return f"0.0 {unit}"
+    return f"{v:+.1f} {unit}".replace("-", "−")
 
 
 def load_uploaded(file) -> "trimesh.Trimesh":
