@@ -131,6 +131,7 @@ with st.sidebar:
             st.markdown(kv_table([
                 ("Size", size),
                 ("Volume", f"{mesh.volume:,.0f} mm³"),
+                ("Vertices", f"{len(mesh.vertices):,}"),
                 ("Triangles", f"{len(mesh.faces):,}"),
                 ("Closed mesh", "Yes" if mesh.is_watertight else "No"),
             ], small=True), unsafe_allow_html=True)
