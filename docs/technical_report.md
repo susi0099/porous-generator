@@ -1,6 +1,6 @@
 # Technical report: Porous Structure Generator for 3D Printing
 
-Yoshinaga Fujihara and Ayumu [surname]
+Yoshinaga Fujihara and Ayumu Takahashi
 IIT Madras, November 2026
 
 Repository: https://github.com/susi0099/porous-generator (engine at tag `v1.0`)
@@ -329,6 +329,8 @@ Unless stated, the settings are cell 6 mm, pitch 0.5 mm and no skin.
   0.10 mm layers). We looked for warnings and checked in the slice preview that no line is broken.
 - **App.** We ran the app with the final engine on four cases, including `broken_cube.stl`,
   and compared the numbers with `summary.csv`.
+- **Test print.** A 20 mm cube was printed twice on the lab printer, solid and at 50 %,
+  and measured with a caliper (Section 5.11).
 
 ### 4.5 Environment
 
@@ -459,9 +461,7 @@ so this item is not judged with a skin (Table 4.2).
 
 At 80 % the walls are thin. There is no room for infill between them, so the slicer prints them
 with perimeter lines only. With a 0.4 mm nozzle this still works, but there is little margin.
-Details are in `results/slicer_check.md`.
-
-We did not print a test sample in this project.
+Details are in `results/slicer_check.md`. The printed cubes are in Section 5.11.
 
 ### 5.8 App check
 
@@ -496,6 +496,58 @@ that the engine's own output did not show:
 We ran all tests again after each change to the engine (on 21, 22 and 26 October).
 The numbers of the earlier cases stayed exactly the same, so new features did not change old results.
 The 172 single checks are recorded in `results/checks.csv`.
+
+### 5.11 Test print
+
+We printed a 20 mm cube twice on the lab printer, side by side on one plate:
+the solid cube (the input model) and the same cube at 50 % (cell 6 mm, pitch 0.5 mm).
+The porous STL has a porosity of 49.6 % and is 20.55 mm on each side.
+After printing, both cubes were measured with a caliper.
+
+**Table 5.9 Printed size against the STL (mm)**
+
+| Cube | Axis | STL | Printed | Difference |
+|---|---|---:|---:|---:|
+| Solid | X | 20.00 | 20.01 | +0.01 |
+| Solid | Y | 20.00 | 20.31 | +0.31 |
+| Solid | Z | 20.00 | 20.00 | 0.00 |
+| Porous | X | 20.55 | 21.10 | +0.55 |
+| Porous | Y | 20.55 | 21.04 | +0.49 |
+| Porous | Z | 20.55 | 20.67 | +0.12 |
+
+The solid cube is within 0.31 mm of its model. The porous cube is up to 0.55 mm larger than its STL
+in X and Y, but only 0.12 mm in height. Its outside is rough, with small bumps where the lattice meets
+the surface, and the caliper touches the highest bumps. The height is set by the layers, so it stays close.
+
+**Table 5.10 Porous cube from the 20 mm design to the print (mm)**
+
+| | X | Y | Z |
+|---|---:|---:|---:|
+| Design | 20.00 | 20.00 | 20.00 |
+| STL from the engine | 20.55 | 20.55 | 20.55 |
+| Printed | 21.10 | 21.04 | 20.67 |
+| Added by the engine | +0.55 | +0.55 | +0.55 |
+| Added by printing | +0.55 | +0.49 | +0.12 |
+| **Total** | **+1.10** | **+1.04** | **+0.67** |
+
+Against the 20 mm design, about half of the extra size comes from the engine. Its surface sits about
+0.28 mm outside the voxels on each side, so the STL is already 20.55 mm (the same 0.27 mm shift appears
+for cube30 in Section 5.6). The other half comes from printing.
+
+What we saw during and after the print:
+
+- The lattice printed without any support. Where a layer bridges over a pore, it sags a little.
+- Thin strings formed between the two cubes, from the nozzle moving between them.
+- On the finished porous cube, the pores are open on the top and on every side we looked at,
+  the edges are straight and the cube keeps its shape when held in the hand.
+  The side that faced the solid cube is rougher, where the strings were cut off.
+- The solid cube is flat on every side. A thin groove runs around it about 2 to 3 mm below the top,
+  probably from a short gap in the extrusion.
+
+We did not weigh the cubes, so the porosity of the printed part itself was not measured.
+
+![Finished porous cube, 20 mm, 50 %](../results/print/print_cube20_porous_finished.png)
+![Finished solid cube, 20 mm](../results/print/print_cube20_solid_finished.png)
 
 ## 6. Limitations and future work
 
@@ -533,8 +585,10 @@ would reduce this.
 - **Other pore patterns**, such as Schwarz P and diamond. Only the function f and the calibration
   table have to change (Section 2.3).
 - **Radial gradient**, where the porosity changes from the centre outwards.
-- **Test prints** of the 20 mm cube at 50 % and graded, to compare the printed weight with the
-  measured porosity.
+- **Smaller engine surface.** The porous STL is 0.55 mm larger than the input (Section 5.11).
+  Moving the surface about 0.28 mm inwards would make the printed part closer to the design.
+- **Printed porosity by weight.** Print a solid and a porous part with 100 % infill and compare their
+  weights, and print a graded part as well.
 - **Comparison with the random-sphere method** from the course material. We did not try it,
   because spheres that do not overlap limit the porosity to about 30 to 35 %.
 
